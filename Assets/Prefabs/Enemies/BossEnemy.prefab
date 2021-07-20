@@ -515,7 +515,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2c275305db587948b548038a3d04519, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _health: 20
+  _health: 300
   _score: 50000
   _explosions:
   - {fileID: 1840157479943976490}
@@ -527,7 +527,6 @@ MonoBehaviour:
   _thrusters:
   - {fileID: 1413320607}
   _sparkle: {fileID: 0}
-  _laser: {fileID: 0}
   _smoke:
   - {fileID: 1512638178748356806}
   - {fileID: 6105323761898815218}

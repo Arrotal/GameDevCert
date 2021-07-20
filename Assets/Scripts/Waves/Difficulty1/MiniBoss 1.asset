@@ -17,4 +17,6 @@ MonoBehaviour:
   _numberOfEnemies: 1
   _moveSpeed: 3
   _difficulty: 0
+  _spawnLoc: 0
+  _bossType: 1
   _waveWaypoints: []

@@ -17,6 +17,8 @@ MonoBehaviour:
   _numberOfEnemies: 1
   _moveSpeed: 3
   _difficulty: 0
+  _spawnLoc: 0
+  _bossType: 1
   _waveWaypoints:
   - {fileID: 351423789986831256, guid: 29e14775be02a2741a962ba6c45f330e, type: 3}
   - {fileID: 351423789893978588, guid: 29e14775be02a2741a962ba6c45f330e, type: 3}

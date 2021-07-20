@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyController : BaseEnemy
 {
-    [SerializeField]private int  _type;
+    [SerializeField]private int  _type,_shotDirection;
   
     private Vector2 _deathPosition;
     private GameObject _powerUp;
@@ -41,10 +41,6 @@ public class EnemyController : BaseEnemy
       
     private Vector2 _shootPosition = new Vector2();
     private GameObject _shot;
-    public bool IsDeadCheck()
-    {
-        return !_meshRenderer;
-    }
 
     protected override IEnumerator Shoot()
     {
@@ -54,10 +50,10 @@ public class EnemyController : BaseEnemy
             _shootPosition.y = transform.position.y;
             if (_type == 0 || _type == 1)
             {
-                _shot = ShotPoolManager.Instance.RequestShot(1);
-
+                _shot = ShotPoolManager.Instance.RequestShot(0);
                 _shot.transform.position = _shootPosition;
-                yield return new WaitForSeconds(Random.Range(.8f, 1.3f));
+                _shot.GetComponent<EnemyShotMovement>().GettingShotDirection(_shotDirection);
+                yield return new WaitForSeconds(Random.Range(.8f, 1.2f));
             }
             else if (_type == 2||_type ==3)
             {
@@ -66,7 +62,7 @@ public class EnemyController : BaseEnemy
                 _shot = ShotPoolManager.Instance.RequestShot(2);
                 _shootPosition.y += 0.1f;
                 _shot.transform.position = _shootPosition;
-                yield return new WaitForSeconds(Random.Range(.1f, .5f));
+                yield return new WaitForSeconds(Random.Range(.05f, .3f));
 
             }
 

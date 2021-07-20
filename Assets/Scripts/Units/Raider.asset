@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33d78c665b4ef374ca5ca6ed0fa0d826, type: 3}
+  m_Name: Raider
+  m_EditorClassIdentifier: 
+  _name: Raider
+  _description: Shoots 1 shot every second.
+  _shots: 1
+  _shotType: 100
+  _unitCost: 1
+  _ID: 0
+  _unitType: 00000000
+  _level1Skills: 020000000200000002000000
+  _level2Skills: 0100000001000000
+  _level3Skills: 0100000001000000
+  _shotIntervel: 1
+  _shotDamage: 5
+  _shotSpeed: 7
+  _unit: {fileID: 5750156406293243054, guid: f46c43dc47994154496190dc65a560cb, type: 3}
+  _level1SkillDescription:
+  - 20% Reduced time between projectiles.
+  - 10% Chance of an extra projectile.
+  - 15% Increased projectile damage.
+  _level2SkillDescription:
+  - Projectile splits into 2 smaller projectiles dealing 60% less damage per projectile.
+  - Projectile is 50% larger and deals 50% more damage.
+  _level3SkillDescription:
+  - 70% Reduced time between projectiles.
+  - Projectile now pierces enemies.
+  _level1SkillName:
+  - Shot Speed
+  - Reserve Shot
+  - Hardened Shot
+  _level2SkillName:
+  - Shotgun Shot
+  - Charged Shot
+  _level3SkillName:
+  - Revolving Shot
+  - Laser Shot

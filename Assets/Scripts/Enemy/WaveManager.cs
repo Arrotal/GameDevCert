@@ -7,8 +7,8 @@ public class WaveManager : ScriptableObject
 {
 
     [SerializeField] private GameObject _enemy, _path;
-    [SerializeField] private int _numberOfEnemies, _moveSpeed, _difficulty;
-    
+    [SerializeField] private int _numberOfEnemies, _moveSpeed, _difficulty, _spawnLoc;
+    [SerializeField] private bool _bossType;
 
     public List<Transform> _waveWaypoints;
     public List<Transform> GetWaypoints()
@@ -25,4 +25,6 @@ public class WaveManager : ScriptableObject
     public int GetMoveSpeed(){ return _moveSpeed;}
     public int GetNumberOfEnemies() { return _numberOfEnemies; }
     public int GetDifficulty() { return _difficulty; }
+    public int GetSpawnLoc() { return _spawnLoc; }
+    public bool IsBoss() { return _bossType; }
 }

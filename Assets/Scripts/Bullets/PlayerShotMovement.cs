@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class PlayerShotMovement : MonoBehaviour
 {
-    private float _speed= 8f;
+    private float _speed=4, _damage=3;
     [SerializeField] private int _shotType;
+    [SerializeField] private GameObject _explosion;
 
-    
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("ShotRecycler"))
+        if (other.CompareTag("Recycler"))
         {
             Hide();
         }
@@ -18,14 +18,29 @@ public class PlayerShotMovement : MonoBehaviour
         {
             switch(_shotType)
             {
-                case 0:
-                other.GetComponent<BaseEnemy>().TakeDamage(3);
-                Hide();
+                case 100:
+                other.GetComponent<BaseEnemy>().TakeDamage((int)(_damage));
+                    GameObject miniexplosion = Instantiate(_explosion);
+                    miniexplosion.transform.position = this.gameObject.transform.position;
+                    Hide();
                     break;
-                case 1:
-                    other.GetComponent<BaseEnemy>().TakeDamage(5);
+                case 110:
+                    other.GetComponent<BaseEnemy>().TakeDamage((int)(_damage));
+                    miniexplosion = Instantiate(_explosion);
+                    miniexplosion.transform.position = this.gameObject.transform.position;
+                    Hide();
                     break;
-                
+
+
+
+
+                case 510:
+                    other.GetComponent<BaseEnemy>().TakeDamage((int)(_damage));
+                    miniexplosion = Instantiate(_explosion);
+                    miniexplosion.transform.position = this.gameObject.transform.position;
+                    Hide();
+                    break;
+
 
                 default:
                     break;
@@ -34,15 +49,18 @@ public class PlayerShotMovement : MonoBehaviour
         
     }
 
+    public void SetDamage(float damage){ _damage = damage; }
+    public void SetSpeed(float speed) { _speed = speed; }
+    public float GetDamage() { return _damage; }
+    public float GetSpeed() { return _damage; }
+
     private void Hide()
     {
-        this.gameObject.SetActive(false);
+        Destroy(this.gameObject);
     }
-
 
     void Update()
     {
-        if(_shotType != 2)
         transform.Translate(Vector3.right * _speed * Time.deltaTime);
     }
 }

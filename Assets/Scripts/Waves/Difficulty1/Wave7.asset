@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b4e7406e7e23504d84c5be63e899adf, type: 3}
   m_Name: Wave7
   m_EditorClassIdentifier: 
-  _enemy: {fileID: 706122129021416349, guid: 4cf361410e3e5b542b8afd02670380a4, type: 3}
+  _enemy: {fileID: 706122129021416349, guid: b39dd56343a5b9246a73e46d2548a6f4, type: 3}
   _path: {fileID: 8478449479075304806, guid: fe4c97675828f99429bb924eb12ab145, type: 3}
   _numberOfEnemies: 4
-  _moveSpeed: 4
+  _moveSpeed: 3
   _difficulty: 0
+  _spawnLoc: 6
+  _bossType: 0
   _waveWaypoints:
   - {fileID: 8478449477399714839, guid: fe4c97675828f99429bb924eb12ab145, type: 3}
   - {fileID: 476203622966104809, guid: fe4c97675828f99429bb924eb12ab145, type: 3}

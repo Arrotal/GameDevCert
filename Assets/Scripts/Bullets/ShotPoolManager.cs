@@ -16,20 +16,15 @@ public class ShotPoolManager : MonoBehaviour
             return _instance;
         }
     }
-    [SerializeField] private GameObject _playerShot;
-    [SerializeField] private List<GameObject> _playerShotPool;
+    [SerializeField] private List<GameObject> _UnitShots;
+    [SerializeField] private List<GameObject> _UnitExtraShots;
 
     [SerializeField] private GameObject _enemyShot;
-    [SerializeField] private List<GameObject> _enemyShotPool;
+    private List<GameObject> _enemyShotPool = new List<GameObject>();
 
     [SerializeField] private GameObject _enemyMiniBossShot;
-    [SerializeField] private List<GameObject> _enemyMiniBossShotPool;
+    private List<GameObject> _enemyMiniBossShotPool = new List<GameObject>();
 
-    [SerializeField] private GameObject _playerLaser;
-    [SerializeField] private List<GameObject> _playerLaserPool;
-
-    [SerializeField] private GameObject _playerMissiles;
-    [SerializeField] private List<GameObject> _playerMissilesPool;
 
     [SerializeField] private GameObject _powerUpDrop;
 
@@ -38,31 +33,26 @@ public class ShotPoolManager : MonoBehaviour
     private GameObject _parentContainer;
     void Start()
     {
-        UIManager.gameOver += ClearShots;
-        GeneratePlayerShots(_playerShotPool, _playerShot, 20);
-        GeneratePlayerShots(_enemyShotPool, _enemyShot, 30);
-        GeneratePlayerShots(_enemyMiniBossShotPool, _enemyMiniBossShot, 10);
-        GeneratePlayerShots(_playerLaserPool, _playerLaser, 20);
-        GeneratePlayerShots(_playerMissilesPool, _playerMissiles, 10);
+        UnitPicker.completedWave += ClearShots;
     }
 
-    private void ClearShots(int redundant)
+    private void ClearShots()
     {
         foreach (Transform child in this.gameObject.transform)
         {
-            child.gameObject.SetActive(false) ;
+            Destroy(child.gameObject);
         }
     }
-    private void GeneratePlayerShots(List<GameObject> shotList, GameObject shotName, int shotAmount)
-    {
-        for (int s = 0; s < shotAmount; s++)
-        {
-            GameObject shot = Instantiate(shotName, _parentContainer.transform);
-            shot.SetActive(false);
-            shotList.Add(shot);
-        }
+    //private void GenerateShots(List<GameObject> shotList, GameObject shotName, int shotAmount)
+    //{
+    //    for (int s = 0; s < shotAmount; s++)
+    //    {
+    //        GameObject shot = Instantiate(shotName, _parentContainer.transform);
+    //        shot.SetActive(false);
+    //        shotList.Add(shot);
+    //    }
 
-    }
+    //}
     public GameObject RequestBossLaser(bool isTracking)
     {
         
@@ -82,22 +72,10 @@ public class ShotPoolManager : MonoBehaviour
     {
         switch (shotType)
         {
+ 
+            //---------------------------------------//
+            //Enemy Shots
             case 0:
-                //Player Basic Shot
-              foreach (var shot in _playerShotPool)
-                {
-                     if (!shot.activeInHierarchy)
-                        {
-                          shot.SetActive(true);
-                            return shot;
-                        }
-
-               }
-              GameObject NewShot = Instantiate(_playerShot, _parentContainer.transform);
-              NewShot.SetActive(true);
-              return NewShot;
-
-            case 1:
                 //Enemy Basic Shot
                 foreach (var shot in _enemyShotPool)
                 {
@@ -111,6 +89,11 @@ public class ShotPoolManager : MonoBehaviour
                 GameObject NewEShot = Instantiate(_enemyShot, _parentContainer.transform);
                 NewEShot.SetActive(true);
                 return NewEShot;
+
+            case 1:
+                //Enemy Basic Alternate Shot
+                return null;
+
             case 2:
                 //Enemy Mini Boss Shot
                 foreach(var shot in _enemyMiniBossShotPool)
@@ -127,32 +110,59 @@ public class ShotPoolManager : MonoBehaviour
                 return NewMShot;
 
             case 3:
-                //Player Laser
-                foreach (var shot in _playerLaserPool)
-                {
-                    if (!shot.activeInHierarchy)
-                    {
-                        shot.SetActive(true);
-                        return shot;
-                    }
-
-                }
-                GameObject laser = Instantiate(_playerLaser, _parentContainer.transform);
-                laser.SetActive(true);
-                return laser;
+                //Enemy shots
+                return null;
 
             case 4:
-                foreach (var shot in _playerMissilesPool)
-                {
-                    if (!shot.activeInHierarchy)
-                    {
-                        shot.SetActive(true);
-                        return shot;
-                    }
-                }
-                GameObject missile = Instantiate(_playerMissiles, _parentContainer.transform);
-                missile.SetActive(true);
-                return missile;
+                //Enemy Shots
+                return null;
+
+
+
+            //---------------------------------------//
+            //Unit Shots
+            //Fighter Pure Units
+            case 100:
+                //Raider shot
+                GameObject RaiderShot = Instantiate(_UnitShots[0], _parentContainer.transform);
+                RaiderShot.SetActive(true);
+                return RaiderShot;
+            case 101:
+                //Viper
+                return null;
+            case 102:
+                //Aurora
+                return null;
+            case 103:
+                //Bebop
+                return null;
+
+            //Bomber Pure Units
+            case 110:
+                //Zero Shot
+                GameObject ZeroShot = Instantiate(_UnitShots[1], _parentContainer.transform);
+                ZeroShot.SetActive(true);
+                return ZeroShot;
+            case 111:
+                //Rocket
+                return null;
+            case 112:
+                //Icarus
+                return null;
+            case 113:
+                //Excalibur
+                return null;
+
+
+
+                //Extra Projectiles
+            case 510:
+                //Zero Extra Shot
+                GameObject explosionShot = Instantiate(_UnitExtraShots[0], _parentContainer.transform);
+                explosionShot.SetActive(true);
+                return explosionShot;
+
+
             default:
               return null;
     }

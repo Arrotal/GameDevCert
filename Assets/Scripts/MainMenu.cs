@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
 
-    [SerializeField] private Canvas _mainMenu, _options, _credits;
+    [SerializeField] private Canvas _mainMenu, _options, _credits,_scoreBoard;
     [SerializeField] private GameObject _logo;
     void Start()
     {
@@ -20,7 +20,18 @@ public class MainMenu : MonoBehaviour
         _logo.SetActive(false);
         _credits.enabled = true;
     }
-
+    public void ScoreBoard()
+    {
+        _mainMenu.enabled = false;
+        _logo.SetActive(false);
+        _scoreBoard.enabled = true;
+    }
+    public void ExitScoreBoard()
+    {
+        _mainMenu.enabled = true;
+        _logo.SetActive(true);
+        _scoreBoard.enabled = false;
+    }
     public void ExitCredits()
     {
         _mainMenu.enabled = true;

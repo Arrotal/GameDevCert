@@ -22,12 +22,13 @@ public class UIManager : MonoBehaviour
     }
 
     private float _difficulty;
-    [SerializeField] private TMP_Text _scoreNumber, _currentPower, _gameOverScore,_pauseScore, _levelScore;
-    [SerializeField] private GameObject _gameOverCanvas, _levelCompleteCanvas, _gameCanvas, _pauseCanvas,_bossWarning;
+    [SerializeField] private TMP_Text _scoreNumber, _gameOverScore,_pauseScore, _levelScore;
+    [SerializeField] private GameObject _gameOverCanvas, _levelCompleteCanvas, _gameCanvas, _pauseCanvas, _bossWarning, _scoreBoard;
     private string format = "000000.##";
     private int _score;
     private int _previousScore;
-    [SerializeField]private List<GameObject> _lives;
+    
+    
 
     private int _checkpoint = 0;
 
@@ -49,49 +50,10 @@ public class UIManager : MonoBehaviour
             _previousScore++;
         }
     }
-    public void UpdateCurrentWeapon(int weapon)
-    {
-        switch (weapon)
-        {
-            case 0:
-                _currentPower.text = "Dual Guns";
-                break;
-            case 1:
-                _currentPower.text = "Laser";
-                break;
-            case 2:
-                _currentPower.text = "Missiles";
-                break;
-            case 3:
-                _currentPower.text = "Orbitals";
-                break;
-            default:
-                break;
-        }    
-    }
+
     public delegate void Gameover(int checkPoint);
     public static event Gameover gameOver;
-    private int _livesLeft;
-    public void UpdateLives(int lives)
-    {
-        if (lives < 2)
-            
-        PlayerDeath(lives);
-        if (lives >= 0)
-        {
-            _lives[0].SetActive(false);
-            _lives[1].SetActive(false);
-            _lives[2].SetActive(false);
-            for (int loop = 0; loop <= lives; loop++)
-            {
-                _lives[loop].SetActive(true);
-            }
-        }
-        else
-        {
-            //Wait for explosion then Gameover Screen
-        }
-    }
+
     public delegate void Restart();
     public static event Restart restart;
     [SerializeField] private GameObject _fadeToBlack;
@@ -105,28 +67,103 @@ public class UIManager : MonoBehaviour
         
         _fadeToBlack.SetActive(false);
     }
+  
+    public void UpdateHealth(float health)
+    { 
+        
+    }
+
+    public void LoadMainMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
     private bool _gameOver = false;
 
-
+    private int _highScoreSpot = 99;
+    private Vector3 _inputLocation = new Vector3(711, 0, 0);
     private void PlayerDeath(int lives)
     {
 
         if (lives < 0)
         {
 
+            StopCoroutine(BossWarning());
+            _bossCanvas.SetActive(false);
             gameOver(_checkpoint);
             _gameOver = true;
-            StartCoroutine(FlashMenu());
-            _gameOverScore.text = _scoreNumber.text;
+            _highScoreSpot = ScoreBoard.Instance.checkScore(_score);
+            if (_highScoreSpot != 99)
+            {
+                _submittedName.gameObject.SetActive(true);
+                switch (_highScoreSpot)
+                {
+                    case 0:
+                        _inputLocation.y = 800;                        
+                        break;
+                    case 1:
+                        _inputLocation.y = 740;
+                        break;
+                    case 2:
+                        _inputLocation.y = 680;
+                        break;
+                    case 3:
+                        _inputLocation.y = 620;
+                        break;
+                    case 4:
+                        _inputLocation.y = 560;
+                        break;
+                    case 5:
+                        _inputLocation.y = 500;
+                        break;
+                    case 6:
+                        _inputLocation.y = 440;
+                        break;
+                    case 7:
+                        _inputLocation.y = 380;
+                        break;
+                    case 8:
+                        _inputLocation.y = 320;
+                        break;
+                    case 9:
+                        _inputLocation.y = 260;
+                        break;
+                }
+
+                _submittedName.transform.localPosition = _inputLocation;
+                _scoreBoard.SetActive(true);
+
+                _submittedName.ActivateInputField();
+            }
+
+            else
+            {
+                StartCoroutine(FlashMenu());
+                _gameOverScore.text = _scoreNumber.text;
+            }
             _gameCanvas.SetActive(false);
         }
-        else if(lives>=0)
+        else if (lives >= 0)
         {
+
             StopAllCoroutines();
+            _bossCanvas.SetActive(false);
             StartCoroutine(RespawnTime());
         }
         
     }
+
+
+    [SerializeField] private TMP_InputField _submittedName;
+    private string playerName;
+    public void SetHighScore()
+    {
+        _submittedName.gameObject.SetActive(false);
+        playerName = _submittedName.text;
+        ScoreBoard.Instance.SetHighScore(_score, playerName);
+        ScoreBoard.Instance.SetGameScoreBoard();
+
+    }
+    
     public void GiveCheckPoint(int checkpoint)
     {
         _checkpoint = checkpoint;
@@ -156,7 +193,7 @@ public class UIManager : MonoBehaviour
         _pause = false;
         UpdateScore(0);
         _difficulty = PlayerPreferences.GetDifficulty();
-
+        ScoreBoard.Instance.SetGameScoreBoard();
     }
     private void Awake()
     {
@@ -218,42 +255,46 @@ public class UIManager : MonoBehaviour
 
     private void Update()
     {
-        if (_gameOver && Input.GetKeyDown(KeyCode.Space))
+        if (_highScoreSpot == 99)
         {
-            SceneManager.LoadScene(2);
-        }
-        if (Input.GetKeyDown(KeyCode.Escape) && !_gameOver)
-        {
-            if (!_pause)
-            { 
-            Time.timeScale = 0;
-                _pause = true;
-                _gameCanvas.SetActive(false);
-                _pauseCanvas.SetActive(true);
-                _pauseScore.text = _scoreNumber.text;
-                return;
+            if (_gameOver && Input.GetKeyDown(KeyCode.Space))
+            {
+                SceneManager.LoadScene(2);
             }
-            if (_pause)
+            if (Input.GetKeyDown(KeyCode.Escape) && !_gameOver)
+            {
+                if (!_pause)
+                {
+                    Time.timeScale = 0;
+                    _pause = true;
+                    _gameCanvas.SetActive(false);
+                    _pauseCanvas.SetActive(true);
+                    _pauseScore.text = _scoreNumber.text;
+                    return;
+                }
+                if (_pause)
+                {
+                    Time.timeScale = 1;
+                    _pause = false;
+                    _gameCanvas.SetActive(true);
+                    _pauseCanvas.SetActive(false);
+                    return;
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.F) && _levelComplete && _difficulty < 5)
+            {
+                PlayerPreferences.SetMasterDifficulty(_difficulty + 1);
+                SceneManager.LoadScene(2);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Q) && _pause)
             {
                 Time.timeScale = 1;
-                _pause = false;
-                _gameCanvas.SetActive(true);
-                _pauseCanvas.SetActive(false);
-                return;
+
+                SceneManager.LoadScene(0);
             }
         }
-
-        if (Input.GetKeyDown(KeyCode.F) && _levelComplete && _difficulty<5)
-        {
-            PlayerPreferences.SetMasterDifficulty(_difficulty+1);
-            SceneManager.LoadScene(2);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Q)&&_pause)
-        {
-            Time.timeScale = 1;
-
-            SceneManager.LoadScene(0);
-        }
+    
     }
 }

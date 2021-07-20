@@ -18,20 +18,23 @@ public class PlayerController : MonoBehaviour
     private readonly float _hMax = 0, _hmin = -8.87f, _vMax = 3.7f, _vMin = -3.7f, _speed = 5f;
     private Vector2 _movementVector = new Vector2(), _limitVector;
     public PowerUpState _powerUpState;
-    private int _health;
+    private float _health, _maxHealth;
     private Animator _playerAnimator;
 
-    [SerializeField] private GameObject _thrusters, _explosion;
+    [SerializeField] private GameObject _thrusters, _explosion, _powerUpEffect;
+
 
     //Player Firing Controls
 
     private Coroutine _firingCoroutine;
     [SerializeField] private GameObject _orbital1, _orbital2, _losePowerUp;
-
+    private bool canShoot = true;
     private MeshRenderer _meshRenderer;
+    private BoxCollider2D _boxCollider2D;
     private Vector3 _startingPoint = new Vector3(-5,0,0);
     private void Start()
     {
+        _losePowerUp.SetActive(false);
         UIManager.restart += Restart;
         UIManager.gameOver += GameOver;
         UIManager.reset += Reset;
@@ -39,45 +42,53 @@ public class PlayerController : MonoBehaviour
         _explosion.SetActive(false);
         _meshRenderer = GetComponent<MeshRenderer>();
         _meshRenderer.enabled = true;
+        _boxCollider2D = GetComponent<BoxCollider2D>();
+        _boxCollider2D.enabled = true;
         _playerAnimator = GetComponent<Animator>();
-        _health = 2;
-        UIManager.Instance.UpdateLives(_health);
+        _maxHealth = 10f;
+        _health = _maxHealth;
+        UIManager.Instance.UpdateHealth(_health);
         _limitVector = new Vector2();
-        UIManager.Instance.UpdateCurrentWeapon(0);
         transform.position = _startingPoint;
         GetComponent<BoxCollider2D>().enabled = true;
+        _powerUpEffect.SetActive(false);
     }
+    private bool _noMoving = false;
     private void GameOver(int checkpoint)
     {
-        GetComponent<BoxCollider2D>().enabled = false;
+        _noMoving = true;
     }
     private void Reset()
     {
-
+        _noMoving = false;
+        canShoot = true;
+        _losePowerUp.SetActive(false);
         GetComponent<BoxCollider2D>().enabled = true;
         _thrusters.SetActive(true);
         _explosion.SetActive(false);
         _meshRenderer.enabled = true;
+        _boxCollider2D.enabled = true;
         _health = 2;
-        UIManager.Instance.UpdateLives(_health);
-        UIManager.Instance.UpdateCurrentWeapon(0);
+        UIManager.Instance.UpdateHealth(_health);
         transform.position = _startingPoint;
     }
     private void Restart()
     {
-
+        _noMoving = false;
+        canShoot = true;
+        _losePowerUp.SetActive(false);
         GetComponent<BoxCollider2D>().enabled = true;
         _meshRenderer.enabled = true;
+        _boxCollider2D.enabled = true;
         _thrusters.SetActive(true);
         _powerUpState = PowerUpState.Base;
         transform.position = _startingPoint;
     }
     private void Update()
     {
-        if (_meshRenderer.enabled)
+        if (!_noMoving)
         {
             MovementController();
-            Fire();
         }
     }
 
@@ -90,82 +101,20 @@ public class PlayerController : MonoBehaviour
         transform.Translate(_movementVector);
         _limitVector.x = Mathf.Clamp(transform.position.x, _hmin, _hMax);
         _limitVector.y = Mathf.Clamp(transform.position.y, _vMin, _vMax);
-        _playerAnimator.SetFloat("UpMovement", Mathf.Abs(_movementVector.y));
+        _playerAnimator.SetFloat("UpMovement",_movementVector.y);
         _playerAnimator.SetFloat("ForwardMovement", _movementVector.x);
         transform.position = _limitVector;
 
     }
 
-    private void Fire()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            _firingCoroutine = StartCoroutine(FireContinously());
-        }
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            StopCoroutine(_firingCoroutine);
-        }
-
-
-    }
-
-    private readonly WaitForSeconds _wFS = new WaitForSeconds(0.2f);
-    private Vector2 _shotDirection = new Vector2();
-    private GameObject _shot, _laser;
-    private bool _altShot = false;
-    IEnumerator FireContinously()
-    {
-        while (true)
-        {
-            if (_powerUpState >= PowerUpState.Base)
-            {
-                if (_altShot)
-                {
-                    _shotDirection.x = transform.position.x;
-                    _shotDirection.y = transform.position.y - 0.2f;
-                    _shot = ShotPoolManager.Instance.RequestShot(0);
-                    _shot.transform.position = _shotDirection;
-                    _altShot = false;
-                }
-                else if (!_altShot)
-                {
-
-                    _shotDirection.x = transform.position.x;
-                    _shotDirection.y = transform.position.y + 0.2f;
-                    _shot = ShotPoolManager.Instance.RequestShot(0);
-                    _shot.transform.position = _shotDirection;
-                    _altShot = true;
-                }
-                if (_powerUpState >= PowerUpState.Lasers)
-                {
-                    //laser stuff
-                    _shotDirection.x = transform.position.x;
-                    _shotDirection.y = transform.position.y;
-                    _laser = ShotPoolManager.Instance.RequestShot(3);
-                    _laser.transform.position = _shotDirection;
-
-
-                    if (_powerUpState >= PowerUpState.Missiles)
-                    {
-                        //missile stuff
-
-                        _shotDirection.x = transform.position.x;
-                        _shotDirection.y = transform.position.y + Random.Range(-2, 3);
-                        _laser = ShotPoolManager.Instance.RequestShot(4);
-                        _laser.transform.position = _shotDirection;
-
-                    }
-                }
-                yield return _wFS;
-            }
-
-        }
-    }
+    
     private void Respawn()
     {
+        canShoot = false;
+        _losePowerUp.SetActive(false);
         StartCoroutine(Respawned());
         _meshRenderer.enabled = false;
+        _boxCollider2D.enabled = false ;
         _thrusters.SetActive(false);
         _explosion.SetActive(true);
     }
@@ -177,11 +126,13 @@ public class PlayerController : MonoBehaviour
         _explosion.SetActive(false);
         Invincibilty = false;
         _meshRenderer.enabled = true;
+        _boxCollider2D.enabled = true;
     }
-    public void Damage()
+    public void Damage(float damage)
     {
         if (!Invincibilty)
         {
+            CameraShake.Instance.Shake();
             StartCoroutine(InvincibleTimer());
             if (_powerUpState == PowerUpState.Base)
             {
@@ -189,64 +140,24 @@ public class PlayerController : MonoBehaviour
                 StopAllCoroutines();
                 Respawn();
 
-                _health--;
-                UIManager.Instance.UpdateLives(_health);
+                _health -= damage;
+                UIManager.Instance.UpdateHealth(_health);
             }
             else
             {
-                PowerUp(false);
-                //Do damaged animation
+                //TakeDamage
             }
         }
     }
     private WaitForSeconds _wfsInvinc = new WaitForSeconds(2f);
     IEnumerator InvincibleTimer()
     {
-        if(_powerUpState != PowerUpState.Base)
         _losePowerUp.SetActive(true);
         Invincibilty = true;
         yield return _wfsInvinc;
         Invincibilty = false;
-        if (_powerUpState != PowerUpState.Base)
             _losePowerUp.SetActive(false);
         StopCoroutine(InvincibleTimer());
     }
-    public void PowerUp(bool yes)
-    {
-        if (yes)
-        {
-
-            switch (_powerUpState)
-            {
-                case PowerUpState.Base:
-                    _powerUpState = PowerUpState.Lasers;
-                    UIManager.Instance.UpdateCurrentWeapon(1);
-                    break;
-                case PowerUpState.Lasers:
-                    _powerUpState = PowerUpState.Missiles;
-                    UIManager.Instance.UpdateCurrentWeapon(2);
-                    break;
-                case PowerUpState.Missiles:
-                    _powerUpState = PowerUpState.Options;
-                    UIManager.Instance.UpdateCurrentWeapon(3);
-                    _orbital1.SetActive(true);
-                    _orbital2.SetActive(true);
-                    break;
-                case PowerUpState.Options:
-                    UIManager.Instance.UpdateScore(1000);
-                    break;
-                default:
-                    break;
-
-
-            }
-        }
-        else
-        {
-            _powerUpState = PowerUpState.Base;
-            UIManager.Instance.UpdateCurrentWeapon(0);
-            _orbital1.SetActive(false);
-            _orbital2.SetActive(false);
-        }
-    }
+   
 }

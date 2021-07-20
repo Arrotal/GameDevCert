@@ -14,6 +14,7 @@ public abstract class BaseEnemy : MonoBehaviour
     [SerializeField] private GameObject _sparkle;
     protected BoxCollider2D _boxcollider;
     protected int _difficulty;
+    [SerializeField] protected float _damage;
 
     protected int _healthMax;
     public void SetWaveManager(WaveManager _waveManager)
@@ -25,6 +26,7 @@ public abstract class BaseEnemy : MonoBehaviour
     }
     protected void Start()
     {
+        UIManager.gameOver += DestroyOnPlayerDeath;
         switch (_difficulty)
         {
             case 0:
@@ -60,6 +62,14 @@ public abstract class BaseEnemy : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, -180, 0);
         _animator = GetComponent<Animator>();
     }
+    public bool IsDeadCheck()
+    {
+        return !_meshRenderer;
+    }
+    private void DestroyOnPlayerDeath(int redundant)
+    {
+        Destroy(this.gameObject);
+    }
     protected void SetAnimations(int type)
     {
         UIManager.Instance.UpdateScore(_score);
@@ -67,10 +77,6 @@ public abstract class BaseEnemy : MonoBehaviour
         if (type == 1)
         {
             _sparkle.SetActive(false);
-        }
-        if (type == 5)
-        {
-            UIManager.Instance.LevelComplete();
         }
         foreach (GameObject explosion in _explosions)
         {
@@ -86,7 +92,6 @@ public abstract class BaseEnemy : MonoBehaviour
     
     protected IEnumerator TimeBeforDestroy()
     {
-        
         yield return new WaitForSeconds(0.9f);
         Destroy(this.gameObject);
     }
@@ -105,13 +110,22 @@ public abstract class BaseEnemy : MonoBehaviour
             if (waypointIndex < _waypoints.Count)
             {
                 targetPosition = _waypoints[waypointIndex].transform.position;
+                targetPosition.x += Random.Range(-0.05f, 0.06f);
+                targetPosition.y += Random.Range(-0.05f, 0.06f);
                 movementThisFrame = _speed * Time.deltaTime;
                 transform.position = Vector2.MoveTowards(transform.position, targetPosition, movementThisFrame);
                 _animator.SetFloat("UpMovement", transform.position.y - targetPosition.y);
+
+
                 if (transform.position == targetPosition)
                 {
                     waypointIndex++;
                 }
+            }
+            else if (waypointIndex >= _waypoints.Count && _score < 1000)
+            {
+                waypointIndex = 0;
+                targetPosition = _waypoints[waypointIndex].transform.position;
             }
             else if (waypointIndex >= _waypoints.Count)
             {
@@ -135,16 +149,17 @@ public abstract class BaseEnemy : MonoBehaviour
     }
     protected void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Recycler")&& _score < 1000)
-        {
-            Destroy(this.gameObject);
-        }
+       
         if (collision.CompareTag("Player"))
         {
-
-            collision.GetComponent<PlayerController>().Damage();
+            collision.GetComponent<PlayerController>().Damage(_damage);
             Destroy(this.gameObject);
         }
         
+    }
+    private void OnDestroy()
+    {
+        UIManager.gameOver -= DestroyOnPlayerDeath;
+        SpawnManager.Instance.EnemyDead();
     }
 }

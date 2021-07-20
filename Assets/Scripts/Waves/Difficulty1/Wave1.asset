@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _enemy: {fileID: 706122129021416349, guid: 4cf361410e3e5b542b8afd02670380a4, type: 3}
   _path: {fileID: 7126899470766079482, guid: 61cb1066683502249bd380d6c01c5878, type: 3}
-  _numberOfEnemies: 7
-  _moveSpeed: 9
+  _numberOfEnemies: 10
+  _moveSpeed: 3
   _difficulty: 0
+  _spawnLoc: 0
+  _bossType: 0
   _waveWaypoints:
   - {fileID: 7126899472429151371, guid: 61cb1066683502249bd380d6c01c5878, type: 3}
   - {fileID: 1285079514017790581, guid: 61cb1066683502249bd380d6c01c5878, type: 3}

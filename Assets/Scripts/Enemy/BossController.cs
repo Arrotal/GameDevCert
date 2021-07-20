@@ -72,10 +72,10 @@ public class BossController : BaseEnemy
             _shot = ShotPoolManager.Instance.RequestShot(2);
             _shot.transform.position = _shootPosition;
             _shootPosition.x -= 0.2f;
-            _shot = ShotPoolManager.Instance.RequestShot(1);
+            _shot = ShotPoolManager.Instance.RequestShot(0);
             _shot.transform.position = _shootPosition;
             _shootPosition.y -= 0.2f; 
-            _shot = ShotPoolManager.Instance.RequestShot(1);
+            _shot = ShotPoolManager.Instance.RequestShot(0);
             _shot.transform.position = _shootPosition;
             _shootPosition.x -= 0.2f;
             _shot = ShotPoolManager.Instance.RequestShot(2);

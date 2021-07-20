@@ -15,8 +15,10 @@ MonoBehaviour:
   _enemy: {fileID: 706122129021416349, guid: 4cf361410e3e5b542b8afd02670380a4, type: 3}
   _path: {fileID: 6058416232021241566, guid: d37b5113a1d2dd34b8aaefedb077456d, type: 3}
   _numberOfEnemies: 5
-  _moveSpeed: 12
+  _moveSpeed: 3
   _difficulty: 0
+  _spawnLoc: 4
+  _bossType: 0
   _waveWaypoints:
   - {fileID: 6058416231566190511, guid: d37b5113a1d2dd34b8aaefedb077456d, type: 3}
   - {fileID: 2819676935315073361, guid: d37b5113a1d2dd34b8aaefedb077456d, type: 3}

@@ -1,21 +1,37 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class SpawnManager : MonoBehaviour
 {
+    private static SpawnManager _instance;
+    public static SpawnManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                Debug.LogError("SpawnManager didn't load");
+            }
+            return _instance;
+        }
+    }
 
-    [SerializeField] private List<WaveManager> _difficulty1, _difficulty2, _difficulty3, _difficulty4, _difficulty5;
+    [SerializeField] private List<WaveManager> _waves, _miniBossWaves, _bossWaves;
+    [SerializeField] private GameObject _spawningSpot;
     [SerializeField] private GameObject _altEnemy;
     private float _difficultyLevel;
-    private readonly WaitForSeconds _spawnWait = new WaitForSeconds(.5f), _minibossWait = new WaitForSeconds(10f);
-
+    private readonly WaitForSeconds _spawnWait = new WaitForSeconds(.5f), _minibossWait = new WaitForSeconds(5f), _secondWait = new WaitForSeconds(.2f);
+    private bool _secondhalf = false;
     private GameObject enemy;
+    [SerializeField] private TMP_Text _enemyCountValue;
     IEnumerator SpawnEnemiesInwave(WaveManager waveManager)
     {
         for (int loop = 0; loop < waveManager.GetNumberOfEnemies(); loop++)
         {
-            if (waveManager.GetNumberOfEnemies() == 1|| loop < waveManager.GetNumberOfEnemies()-1)
+            _startingWave = false;
+            if (waveManager.GetNumberOfEnemies() == 1 || loop < waveManager.GetNumberOfEnemies() - 1)
             {
                 enemy = Instantiate(waveManager.GetEnemy(), waveManager.GetWaypoints()[0].position, Quaternion.identity);
                 enemy.GetComponent<BaseEnemy>().SetWaveManager(waveManager);
@@ -23,27 +39,38 @@ public class SpawnManager : MonoBehaviour
                 if (waveManager.GetNumberOfEnemies() == 1)
                 {
                     yield return _minibossWait;
+
                 }
             }
-            else 
+            else
             {
                 enemy = Instantiate(_altEnemy, waveManager.GetWaypoints()[0].position, Quaternion.identity);
                 enemy.GetComponent<EnemyController>().SetWaveManager(waveManager);
                 enemy.transform.parent = this.gameObject.transform;
             }
-           
-            yield return _spawnWait;
-       }
-        
+            
+                yield return _spawnWait;
+            
+        }
+
     }
 
-    
+
     private void Start()
     {
         _difficultyLevel = PlayerPreferences.GetDifficulty();
         UIManager.gameOver += IsGameOver;
         UIManager.restart += RestartSpawning;
         UIManager.reset += RestartSpawning;
+        UnitPicker.startWaves += StartSpawning;
+
+    }
+
+
+    private void StartSpawning(int level, int wave)
+    {
+        _currentLevel = level;
+        _currentWave = wave;
         StartCoroutine(SpawnAllEnemies());
     }
     private int _checkpoint;
@@ -59,67 +86,197 @@ public class SpawnManager : MonoBehaviour
         StopAllCoroutines();
         
     }
+    private void OnDestroy()
+    {
+        UIManager.gameOver -= IsGameOver;
+        UIManager.restart -= RestartSpawning;
+        UIManager.reset -= RestartSpawning;
+        UnitPicker.startWaves -= StartSpawning;
+    }
     private void RestartSpawning()
     {
         StartCoroutine(SpawnAllEnemies());
     }
     private WaitForSeconds _WFS = new WaitForSeconds(1f);
     private int _checkpointWave;
-    private List<WaveManager> _waveDifficulty;
-    IEnumerator SpawnAllEnemies()
+    private List<WaveManager> _enemyWave = new List<WaveManager>();
+    private GameObject _spawndisplay;
+    public int _currentWave,_currentLevel,_wavesToSpawn,_enemyCount, _randomWave;
+    private bool _startingWave = false;
+
+    public void EnemyDead()
     {
-        yield return _WFS;
-        if (_resetting)
+        _enemyCount--;
+        _enemyCountValue.text = _enemyCount.ToString();
+        if (!_startingWave)
         {
-            switch (_checkpoint)
+            if (_enemyCount <= 0)
             {
-                case 0:
-                    _checkpointWave = 0;
-                    break;
-                case 1:
-                    _checkpointWave = 6;
-                    break;
-                case 2:
-                    _checkpointWave = 12;
-                    break;
-                default:
-                    break;
+                UnitPicker.Instance.OpenWaveComplete();
             }
         }
-        switch (_difficultyLevel)
+    }
+    private void SetEnemiesForCurrentWave()
+    {
+        _enemyCount = 0;
+        _startingWave = true;
+        _enemyWave.Clear();
+        switch (_currentLevel)
         {
             case 1:
-                _waveDifficulty = _difficulty1;
+                switch (_currentWave)
+                {
+                    case 1:
+                        _wavesToSpawn = 2;
+                        for (int l=0; l < _wavesToSpawn;l++)
+                        {
+                            _randomWave = Random.Range(0, _waves.Count);
+                            _enemyWave.Add(_waves[_randomWave]);
+                            _enemyCount += _waves[_randomWave].GetNumberOfEnemies();
+                        }
+                        break;
+                    case 2:
+                        _wavesToSpawn = 3;
+                        for (int l = 0; l < _wavesToSpawn; l++)
+                        {
+                            _randomWave = Random.Range(0, _waves.Count);
+                            _enemyWave.Add(_waves[_randomWave]);
+                            _enemyCount += _waves[_randomWave].GetNumberOfEnemies();
+                        }
+                        break;
+                    case 3:
+                        _wavesToSpawn = 5;
+                        for (int l = 0; l < _wavesToSpawn; l++)
+                        {
+                            _randomWave = Random.Range(0, _waves.Count);
+                            _enemyWave.Add(_waves[_randomWave]);
+                            _enemyCount += _waves[_randomWave].GetNumberOfEnemies();
+                        }
+                        break;
+                    case 4:
+                        _wavesToSpawn = 7;
+                        for (int l = 0; l < _wavesToSpawn; l++)
+                        {
+                            _randomWave = Random.Range(0, _waves.Count);
+                            _enemyWave.Add(_waves[_randomWave]);
+                            _enemyCount += _waves[_randomWave].GetNumberOfEnemies();
+                        }
+                        break;
+                    case 5:
+                        _wavesToSpawn = 2;
+                        for (int l = 0; l < _wavesToSpawn; l++)
+                        {
+                            _randomWave = Random.Range(0, _waves.Count);
+                            _enemyWave.Add(_waves[_randomWave]);
+                            _enemyCount += _waves[_randomWave].GetNumberOfEnemies();
+                        }
+                        _randomWave = Random.Range(0, _bossWaves.Count);
+                        _enemyWave.Add(_bossWaves[_randomWave]);
+                        _enemyCount += _bossWaves[_randomWave].GetNumberOfEnemies();
+
+                        break;
+                    default:
+                        break;
+                }
                 break;
             case 2:
-                _waveDifficulty = _difficulty2;
+                switch (_currentWave)
+                {
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+                    default:
+                        break;
+                }
                 break;
             case 3:
-                _waveDifficulty = _difficulty3;
+                switch (_currentWave)
+                {
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+                    default:
+                        break;
+                }
                 break;
             case 4:
-                _waveDifficulty = _difficulty4;
+                switch (_currentWave)
+                {
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+                    default:
+                        break;
+                }
                 break;
             case 5:
-                _waveDifficulty = _difficulty5;
+                switch (_currentWave)
+                {
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+                    default:
+                        break;
+                }
                 break;
+
             default:
-                _waveDifficulty = _difficulty1;
                 break;
 
         }
-            for (int waveIndex = 0; waveIndex < _waveDifficulty.Count; waveIndex++)
+        _enemyCountValue.text = _enemyCount.ToString();
+    }
+    IEnumerator SpawnAllEnemies()
+    {
+
+        
+            SetEnemiesForCurrentWave();
+            for (int waveIndex = 0; waveIndex < _enemyWave.Count; waveIndex++)
             {
-            if(_resetting)
-            waveIndex = _checkpoint;
-            _resetting = false;
-           
-                var currentWave = _waveDifficulty[waveIndex];
+                
+
+                var currentWave = _enemyWave[waveIndex];
+                if (currentWave.IsBoss())
+                {
+                    _spawndisplay = Instantiate(_spawningSpot.transform.GetChild(3).gameObject);
+                }
+                else
+                {
+                    _spawndisplay = Instantiate(_spawningSpot.transform.GetChild(currentWave.GetSpawnLoc()).gameObject);
+                }
+                Destroy(_spawndisplay, 1f);
+
+                yield return _WFS;
                 yield return StartCoroutine(SpawnEnemiesInwave(currentWave));
-            
+
             }
+
+
         
     }
-
+    private void Awake()
+    {
+        _instance = this;
+    }
 
 }

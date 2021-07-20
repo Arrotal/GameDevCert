@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33d78c665b4ef374ca5ca6ed0fa0d826, type: 3}
+  m_Name: Zero
+  m_EditorClassIdentifier: 
+  _name: Zero
+  _description: Shoots 1 slow moving bomb every 3 seconds.
+  _shots: 1
+  _shotType: 110
+  _unitCost: 1
+  _ID: 110
+  _unitType: 01000000
+  _shotIntervel: 3
+  _shotDamage: 10
+  _shotSpeed: 3
+  _unit: {fileID: 7306546135109670250, guid: 7607afe12caa7ad409c8bd70660b859c, type: 3}

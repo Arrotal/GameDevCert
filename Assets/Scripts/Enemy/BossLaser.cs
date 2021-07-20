@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class BossLaser : MonoBehaviour
 {
+    [SerializeField] private float _damage;
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            collision.GetComponent<PlayerController>().Damage();
+            collision.GetComponent<PlayerController>().Damage(_damage);
         }
         if (collision.CompareTag("Shot"))
         {
@@ -36,9 +37,13 @@ public class BossLaser : MonoBehaviour
     {
         _tracking = false;
     }
+    public void ShakeTime()
+    {
+        CameraShake.Instance.Shake();
+    }
     public void DestroyThis(int yes)
     {
-       
+        UIManager.gameOver -= DestroyThis;
         Destroy(this.gameObject);
     }
     public void IsTracking()

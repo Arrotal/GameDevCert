@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4795781641643164648}
   - component: {fileID: 4795781641643164649}
   - component: {fileID: -799649510023572823}
+  - component: {fileID: 2133693123}
   m_Layer: 11
   m_Name: PostProcessing
   m_TagString: Untagged
@@ -61,3 +62,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0447a6671e32c3e42bec4f20da7b8e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _volume: {fileID: 4795781641643164649}
+  _brightness: {fileID: 0}
+--- !u!114 &2133693123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4795781641643164646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e51e2babbe5a248418725fdff3c86a2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mainMenuScores:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  _mainMenuNames:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  _gameScores: []
+  _gameNames: []

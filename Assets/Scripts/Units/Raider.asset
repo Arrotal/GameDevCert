@@ -17,25 +17,22 @@ MonoBehaviour:
   _shots: 1
   _shotType: 100
   _unitCost: 1
-  _ID: 0
+  _ID: 100
   _unitType: 00000000
-  _level1Skills: 020000000200000002000000
-  _level2Skills: 0100000001000000
+  _level1Skills: 030000000300000003000000
+  _level2Skills: 0200000002000000
   _level3Skills: 0100000001000000
-  _shotIntervel: 1
-  _shotDamage: 5
-  _shotSpeed: 7
   _unit: {fileID: 5750156406293243054, guid: f46c43dc47994154496190dc65a560cb, type: 3}
   _level1SkillDescription:
-  - 20% Reduced time between projectiles.
+  - 10% Reduced time between projectiles.
   - 10% Chance of an extra projectile.
   - 15% Increased projectile damage.
   _level2SkillDescription:
-  - Projectile splits into 2 smaller projectiles dealing 60% less damage per projectile.
+  - Adds an extra smaller projectiles dealing 30% less damage per projectile.
   - Projectile is 50% larger and deals 50% more damage.
   _level3SkillDescription:
-  - 70% Reduced time between projectiles.
-  - Projectile now pierces enemies.
+  - 60% Reduced time between projectiles.
+  - Projectile now pierces enemies.Shots are 50% larger.
   _level1SkillName:
   - Shot Speed
   - Reserve Shot
@@ -46,3 +43,19 @@ MonoBehaviour:
   _level3SkillName:
   - Revolving Shot
   - Laser Shot
+  _levelShotDamage:
+  - 5
+  - 7
+  - 10
+  _levelShotIntervel:
+  - 1
+  - 1
+  - 0.7
+  _levelShotSpeed:
+  - 5
+  - 7
+  - 10
+  _levelShotSize:
+  - 1
+  - 1
+  - 1.4

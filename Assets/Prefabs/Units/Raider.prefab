@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5750156406293243048}
   - component: {fileID: 5750156406293243049}
   - component: {fileID: -5664967495583200757}
+  - component: {fileID: -8715848912487323746}
   m_Layer: 0
   m_Name: Raider
   m_TagString: Untagged
@@ -96,3 +97,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _UnitNumber: 100
+  _shotSize: 0
+  _shotAmount: 1
+--- !u!114 &-8715848912487323746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5750156406293243054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29ca446f4a2160a43a8b426e8dce2fd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

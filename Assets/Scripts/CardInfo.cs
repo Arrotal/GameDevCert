@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
 public class CardInfo : MonoBehaviour
 {
     [SerializeField] TMP_Text _nameText, _descriptionText, _unitCost, _level1SP, _level2SP, _level3SP, _spNameText;
@@ -31,7 +30,6 @@ public class CardInfo : MonoBehaviour
         _level1SkillDescriptions = new List<string>(), _level2SkillDescriptions = new List<string>(), _level3SkillDescriptions = new List<string>();
     private void UpdateSkillTree()
     {
-       
             _level1Skills.AddRange(_unitOnCard.GetLevel1Skill());
             _level1SkillNames.AddRange(_unitOnCard.GetLevel1SkillTree());
             _level1SkillDescriptions.AddRange(_unitOnCard.GetLevel1SkillDescription());      
@@ -55,6 +53,7 @@ public class CardInfo : MonoBehaviour
             UpdateSPCard();
             UpdateSkillTree();
             SetSkillButtons();
+           
         }
     }
     private void SetSkillButtons()
@@ -62,17 +61,17 @@ public class CardInfo : MonoBehaviour
         for (int l = 0; l < _unitOnCard.GetLevel1Skill().Count; l++)
         {
             GameObject skillButton = Instantiate(_skillButton, _level1Panel.transform);
-            skillButton.GetComponent<SkillButton>().AddInfo(_level1Skills[l], _level1SkillNames[l], _level1SkillDescriptions[l],_unitOnCard,1,this);
+            skillButton.GetComponent<SkillButton>().AddInfo(_level1Skills[l], _level1SkillNames[l], _level1SkillDescriptions[l],_unitOnCard,1,this,l+1);
         }
         for (int l = 0; l < _unitOnCard.GetLevel2Skill().Count; l++)
         {
             GameObject skillButton = Instantiate(_skillButton, _level2Panel.transform);
-            skillButton.GetComponent<SkillButton>().AddInfo(_level2Skills[l], _level2SkillNames[l], _level2SkillDescriptions[l], _unitOnCard,2, this);
+            skillButton.GetComponent<SkillButton>().AddInfo(_level2Skills[l], _level2SkillNames[l], _level2SkillDescriptions[l], _unitOnCard,2, this, l + 1);
         }
         for (int l = 0; l < _unitOnCard.GetLevel3Skill().Count; l++)
         {
             GameObject skillButton = Instantiate(_skillButton, _level3Panel.transform);
-            skillButton.GetComponent<SkillButton>().AddInfo(_level3Skills[l], _level3SkillNames[l], _level3SkillDescriptions[l], _unitOnCard,3, this);
+            skillButton.GetComponent<SkillButton>().AddInfo(_level3Skills[l], _level3SkillNames[l], _level3SkillDescriptions[l], _unitOnCard,3, this, l + 1);
         }
     }
     private void OnDestroy()

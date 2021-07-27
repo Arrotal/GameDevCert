@@ -13,18 +13,28 @@ public class SkillButton : MonoBehaviour
     public void SetDescription(string description) { _skillDes.text = description;}
  
     public void SetSkillMax(int max) { _skillLevelMax = max; }
-    public bool CheckIfSkillMaxed()
+    public void CheckIfSkillGettable()
     {
-        if (_skillLevelCurrent < _skillLevelMax)
-         return false;
+       
+        if (!_cardUnit.CheckSP(_tierSP)&& _skillLevelCurrent<_skillLevelMax)
+        {
+            SetButtonStatus(false);
+        }
+        else
+        {
+            SetButtonStatus(true);
+        }
+        
+    }
 
-        _levelUpButton.interactable = false;
-        return true;
+    private void Update()
+    {
+        CheckIfSkillGettable();
     }
     private Unit _cardUnit;
-    private int _tierSP;
+    public int _tierSP, _skillPosandTier;
     private CardInfo _card;
-    public void AddInfo(int skillMax, string SkillName, string SkillDescription, Unit unit, int tier,CardInfo card)
+    public void AddInfo(int skillMax, string SkillName, string SkillDescription, Unit unit, int tier,CardInfo card, int skillPos)
     {
         _skillLevelMax = skillMax;
         _skilLevelTotalText.text = _skillLevelMax.ToString();
@@ -34,19 +44,12 @@ public class SkillButton : MonoBehaviour
         _cardUnit = unit;
         _tierSP = tier;
         _card = card;
-        if (!_cardUnit.CheckSP(_tierSP))
-        {
-            SetButtonStatus(false);
-        }
-        else
-        {
-            SetButtonStatus(true);
-        }
+        _skillPosandTier = _tierSP*10 + skillPos;
+        
     }
 
-    private void SetButtonStatus(bool state)
+    public void SetButtonStatus(bool state)
     {
-        
             _levelUpButton.interactable = state;   
    
     }
@@ -59,10 +62,13 @@ public class SkillButton : MonoBehaviour
             _skillLevelCurrentText.text = _skillLevelCurrent.ToString();
             _cardUnit.ConsumeSP(_tierSP);
             _card.UpdateSPCard();
+            if(!_cardUnit.CheckSP(_tierSP))
+             this.GetComponentInParent<PanelManager>().DisableButtonsInChildren();
             if (_skillLevelCurrent == _skillLevelMax)
             {
                 SetButtonStatus(false);
             }
+            UnitPicker.Instance.SetSkill(_cardUnit, _skillPosandTier);
         }
     }
 

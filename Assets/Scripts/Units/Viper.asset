@@ -17,9 +17,18 @@ MonoBehaviour:
   _shots: 2
   _shotType: 100
   _unitCost: 2
-  _ID: 1
+  _ID: 101
   _unitType: 
+  _level1Skills: 
+  _level2Skills: 
+  _level3Skills: 
   _shotIntervel: 1
   _shotDamage: 4
   _shotSpeed: 8
   _unit: {fileID: 5750156406293243054, guid: e027cc7a99106c7428daa836c8eef959, type: 3}
+  _level1SkillDescription: []
+  _level2SkillDescription: []
+  _level3SkillDescription: []
+  _level1SkillName: []
+  _level2SkillName: []
+  _level3SkillName: []
